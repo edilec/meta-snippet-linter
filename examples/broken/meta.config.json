@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": { "min": 20, "max": 60 },
+    "description": { "min": 70, "max": 155 }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    { "path": "/", "file": "build/index.html", "locale": "en" },
+    { "path": "/copy", "file": "build/copy.html", "locale": "en" },
+    { "path": "/about", "file": "build/about.html", "locale": "en" },
+    { "path": "/legacy", "file": "build/legacy.html", "locale": "en" },
+    { "path": "/fr/", "file": "build/fr.html", "locale": "fr" }
+  ]
+}
