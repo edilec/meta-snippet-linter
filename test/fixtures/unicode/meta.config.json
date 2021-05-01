@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 200
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/nfc",
+      "file": "build/nfc.html",
+      "locale": "en"
+    },
+    {
+      "path": "/nfd",
+      "file": "build/nfd.html",
+      "locale": "en"
+    }
+  ]
+}

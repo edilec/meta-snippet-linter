@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 16
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "ja": {}
+  },
+  "pages": [
+    {
+      "path": "/ja/",
+      "file": "build/ja.html",
+      "locale": "ja"
+    }
+  ]
+}
