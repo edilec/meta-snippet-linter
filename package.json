@@ -1,17 +1,52 @@
 {
   "name": "meta-snippet-linter",
-  "version": "0.0.0",
-  "description": "Lint title and description length, duplication and route coverage.",
+  "version": "0.1.0",
+  "description": "Extract titles and meta descriptions from built HTML and enforce per-locale length, uniqueness and coverage policies with source locations.",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "test": "node --test"
+    "lint": "node --check src/index.mjs && node --check src/count.mjs && node --check src/html.mjs && node --check src/rules.mjs && node --check bin/meta-snippet-linter.mjs && node --check test/audit.test.mjs && node --check test/catalog.test.mjs && node --check test/cli.test.mjs && node --check test/confinement.test.mjs && node --check test/count.test.mjs && node --check test/html.test.mjs && node --check test/incomplete.test.mjs",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=src/**",
+    "example": "node bin/meta-snippet-linter.mjs --config examples/clean/meta.config.json",
+    "pack:check": "npm pack --dry-run",
+    "check": "npm run lint && npm test && npm run example && npm run pack:check"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/edilec/meta-snippet-linter"
-  }
+    "url": "git+https://github.com/edilec/meta-snippet-linter.git"
+  },
+  "bin": {
+    "meta-snippet-linter": "./bin/meta-snippet-linter.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "examples",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "seo",
+    "meta-description",
+    "title",
+    "html",
+    "unicode",
+    "grapheme",
+    "lint",
+    "cli"
+  ],
+  "author": "Edilec Private Limited",
+  "bugs": {
+    "url": "https://github.com/edilec/meta-snippet-linter/issues"
+  },
+  "homepage": "https://github.com/edilec/meta-snippet-linter#readme"
 }
