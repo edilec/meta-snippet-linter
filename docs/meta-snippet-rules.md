@@ -159,9 +159,15 @@ here so a consumer knows they are deliberate:
   counting-pipeline statement. They are in the report rather than only in this document so a
   number lifted out of the JSON cannot be quoted without them.
 
-`evidence` is a single-line excerpt of at most 160 characters with control characters replaced.
-Page content is data: it is never echoed at length and never in a shape that could read as an
-instruction to whoever reads the report.
+`evidence` is a single-line excerpt of at most 160 characters of page text, followed by a literal
+`...` when the value was longer than that. Every C0 control character, `DEL`, every C1 control
+character and the two Unicode line separators (U+2028, U+2029) are replaced with a space, and
+whitespace runs are then collapsed and trimmed. The scrub itself is bounded: at most the first 8192
+code units of a value are ever scanned, however long the value is.
+
+Page content is data: it is never echoed at length, and never in a shape that could read as an
+instruction to whoever reads the report — or as a control sequence to the terminal the stderr
+summary is rendered in.
 
 ## Determinism
 

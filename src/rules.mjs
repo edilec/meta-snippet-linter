@@ -66,7 +66,7 @@ export const RULE_IDS = Object.freeze([...Object.keys(RULE_SEVERITY)].sort(byCod
 export const EVIDENCE_LIMIT = 160
 
 /** How much input an excerpt will ever scan, however long the value is. */
-const SCRUB_LIMIT = 8192
+export const SCRUB_LIMIT = 8192
 
 /**
  * Characters that would break a line, a terminal or a log reader: the C0 and
