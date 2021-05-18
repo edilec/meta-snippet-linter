@@ -91,7 +91,7 @@ never built an observable gap (`page-unreadable`) rather than an absence nobody 
 | `page-limit-exceeded` | error | More pages were declared than `maxPages` allows. Nothing was read. Marks the run incomplete. |
 | `page-not-utf8` | error | The file's bytes are not valid UTF-8, so nothing was decoded from it. Marks the run incomplete. |
 | `page-too-large` | error | The file is larger than `maxHtmlBytes`. It was not read. Marks the run incomplete. |
-| `page-unreadable` | error | A declared page could not be opened. Marks the run incomplete. |
+| `page-unreadable` | error | A declared page could not be opened, or is not a regular file. Marks the run incomplete. |
 | `text-not-nfc` | info | The snippet was not in NFC form. It was normalised before counting and grouping. |
 | `text-truncated` | warning | The snippet is longer than `maxTextLength`, so it was neither measured nor compared. Marks the run incomplete. |
 | `title-duplicate` | error | This title is shared with another page in the configured duplicate scope. |
@@ -185,3 +185,8 @@ Page paths are relative to the input root (the config's directory, or `--root`).
 if it is absolute, if it resolves outside the root by spelling, **or** if its real path — after
 every symbolic link on it has been followed — falls outside the real path of the root. Refusal
 happens before the file is opened, so no out-of-root content ever reaches the report.
+
+Only regular files are read. A directory, a named pipe or a device node standing where a page
+should be is `page-unreadable` with the reason `not a regular file`, and is never opened: opening a
+pipe would make the linter wait on whatever writes to it, and reading one would measure a stream
+rather than the page the build shipped.
