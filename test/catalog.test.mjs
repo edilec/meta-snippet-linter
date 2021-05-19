@@ -159,6 +159,10 @@ test('no source file reaches for locale collation or a clock', async () => {
     // Calls, not mentions: the comments in these files explain why each of
     // these is avoided, and saying so must stay allowed.
     assert.doesNotMatch(text, /\.localeCompare\(/, file)
+    // Collation has more than one spelling. This is a cheap second net; the
+    // ordering that actually matters is pinned behaviourally in
+    // test/ordering.test.mjs, on inputs where the two orders disagree.
+    assert.doesNotMatch(text, /Intl\.Collator/, file)
     assert.doesNotMatch(text, /Date\.now\(|new Date\(/, file)
     assert.doesNotMatch(text, /Math\.random\(/, file)
     assert.doesNotMatch(text, /readdir\(|[^a-zA-Z.]fetch\(/, file)
