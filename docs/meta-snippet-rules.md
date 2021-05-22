@@ -141,7 +141,16 @@ is covered by a test that fails if the wiring is removed.
 
 An unknown key anywhere in the configuration — a top-level key, a page key, a locale override key,
 a bound key, a limit name — is a configuration error. A key that is accepted and then never read is
-how a one-character typo turns a real failure into a green run.
+how a one-character typo turns a real failure into a green run. A limit value that is not a positive
+integer is refused the same way, from the config and from a command-line flag alike.
+
+`schemaVersion` must be exactly the string `"1"`. A document written for any other schema version,
+or for none, is refused rather than read on the assumption that the parts this version understands
+still mean what they used to.
+
+A locale override merges over `defaults` and is then checked as a whole: an override whose merged
+`min` exceeds its merged `max` is a configuration error, because a bound no snippet can satisfy
+would otherwise be reported as a failure of the site rather than of the configuration.
 
 ## The report, and what this tool adds to the envelope
 
