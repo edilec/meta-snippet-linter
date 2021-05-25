@@ -20,6 +20,11 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const fixture = (...parts) => join(HERE, 'fixtures', ...parts)
 
 const rules = (report) => report.findings.map((finding) => finding.ruleId)
+const counts = (report) => ({
+  errors: report.summary.errors,
+  warnings: report.summary.warnings,
+  info: report.summary.info,
+})
 
 async function incompleteRun(name, options = {}) {
   const report = await lintMetaSnippets({ config: fixture('incomplete', name), ...options })
@@ -123,6 +128,40 @@ test('a declared charset this tool does not support is incomplete even though no
   assert.equal(report.summary.warnings, 1)
   assert.equal(report.findings[0].severity, 'warning')
   assert.match(report.findings[0].message, /declares charset "iso-8859-1"/)
+})
+
+/**
+ * Severity decides what `summary.errors` says, and a consumer that reads the
+ * summary rather than the findings reads nothing else. For these five rules the
+ * `incomplete` flag already carries the verdict, so re-grading one to `warning`
+ * leaves the status and the exit code exactly as they were: the only thing that
+ * changes is the number an operator is shown. That is why the grade is asserted
+ * here through the counts, in a file the rule table and the documented catalog
+ * do not mirror -- flipping the table, the literal in test/catalog.test.mjs and
+ * the docs row together leaves every one of them green, and turns this red.
+ */
+test('the five incomplete-family rules are errors, and the summary counts them as errors', async () => {
+  const cases = [
+    ['missing-page.config.json', ['page-unreadable'], { errors: 1, warnings: 0, info: 0 }],
+    ['too-large.config.json', ['nothing-checked', 'page-too-large'], { errors: 2, warnings: 0, info: 0 }],
+    ['not-utf8.config.json', ['nothing-checked', 'page-not-utf8'], { errors: 2, warnings: 0, info: 0 }],
+    ['page-limit.config.json', ['nothing-checked', 'page-limit-exceeded'], { errors: 2, warnings: 0, info: 0 }],
+  ]
+
+  for (const [name, expected, expectedCounts] of cases) {
+    const report = await incompleteRun(name)
+
+    assert.deepEqual(rules(report).sort(), expected, name)
+    for (const finding of report.findings) {
+      assert.equal(finding.severity, 'error', `${name}: ${finding.ruleId}`)
+    }
+    assert.deepEqual(counts(report), expectedCounts, name)
+    assert.equal(report.summary.errors, report.findings.length, name)
+  }
+
+  // The control: these counters do distinguish, and a warning-severity
+  // incomplete run is counted as a warning in the very same summary.
+  assert.deepEqual(counts(await incompleteRun('head-length.config.json')), { errors: 0, warnings: 1, info: 0 })
 })
 
 test('every limit is enforced from the config and from an option override', async () => {

@@ -287,6 +287,10 @@ test('a run that measured nothing is never a pass', async () => {
     [null, '/pages', 'nothing-checked'],
     ['build/one.html', '/document', 'locale-not-declared'],
   ])
+  // Both of these are errors, and the summary a consumer reads says so. The
+  // exit code alone cannot show it: either rule on its own already fails.
+  assert.equal(report.summary.errors, 2)
+  assert.equal(report.summary.warnings, 0)
 })
 
 test('empty, missing and undecodable-entity snippets are each reported once', async () => {
