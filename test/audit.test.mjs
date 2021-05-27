@@ -204,6 +204,41 @@ test('findings sort by file, then pointer, then rule, then position', () => {
   assert.deepEqual(sorted, ['z', 'a', 'b', 'c', 'd'])
 })
 
+/**
+ * The last two components of the documented sort key.
+ *
+ * `message` is the final tie-break, and in every committed fixture it happens
+ * to order findings the same way their positions do -- so deleting `line` and
+ * `column` from the key changed nothing anyone could see. These cases put the
+ * two in opposition: the finding that is later in the message alphabet is
+ * earlier in the file, so only a comparator that really consults the position
+ * produces the expected order.
+ */
+test('line and column decide before message, not after it', () => {
+  const byLine = [
+    { ruleId: 'title-too-long', message: 'a', location: { file: 'a.html', pointer: '/head/title', line: 9, column: 1 } },
+    { ruleId: 'title-too-long', message: 'z', location: { file: 'a.html', pointer: '/head/title', line: 2, column: 1 } },
+  ]
+  const byColumn = [
+    { ruleId: 'title-too-long', message: 'a', location: { file: 'a.html', pointer: '/head/title', line: 4, column: 9 } },
+    { ruleId: 'title-too-long', message: 'z', location: { file: 'a.html', pointer: '/head/title', line: 4, column: 2 } },
+  ]
+  const missingPosition = [
+    { ruleId: 'title-too-long', message: 'a', location: { file: 'a.html', pointer: '/head/title', line: 1, column: 1 } },
+    { ruleId: 'title-too-long', message: 'z', location: { file: 'a.html', pointer: '/head/title' } },
+  ]
+
+  assert.deepEqual([...byLine].sort(compareFindings).map((finding) => finding.message), ['z', 'a'])
+  assert.deepEqual([...byColumn].sort(compareFindings).map((finding) => finding.message), ['z', 'a'])
+  // A finding with no position sorts as 0, which is before any real line.
+  assert.deepEqual([...missingPosition].sort(compareFindings).map((finding) => finding.message), ['z', 'a'])
+
+  // The control: with the positions equal, message is what decides, so the
+  // orders above are the position keys and not a reversed comparator.
+  const samePosition = byLine.map((finding) => ({ ...finding, location: { ...finding.location, line: 3 } }))
+  assert.deepEqual([...samePosition].sort(compareFindings).map((finding) => finding.message), ['a', 'z'])
+})
+
 test('an unknown config key is refused rather than ignored', () => {
   assert.throws(
     () => validateConfig({ ...baseConfig(), duplcateScope: 'site' }),

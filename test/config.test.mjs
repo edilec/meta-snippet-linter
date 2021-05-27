@@ -16,7 +16,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { execFile } from 'node:child_process'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
 
 import { CONFIG_SCHEMA_VERSION, validateConfig } from '../src/index.mjs'
@@ -24,6 +24,7 @@ import { CONFIG_SCHEMA_VERSION, validateConfig } from '../src/index.mjs'
 const run = promisify(execFile)
 const HERE = dirname(fileURLToPath(import.meta.url))
 const CLI = join(HERE, '..', 'bin', 'meta-snippet-linter.mjs')
+const MODULE_URL = pathToFileURL(join(HERE, '..', 'src', 'index.mjs')).href
 const fixture = (...parts) => join(HERE, 'fixtures', ...parts)
 
 function baseConfig(overrides = {}) {
@@ -151,4 +152,46 @@ test('both refusals reach the command line as a configuration error, with empty 
     assert.equal(result.stdout, '', name)
     assert.match(result.stderr, expected, name)
   }
+})
+
+/**
+ * A Node compiled with small-icu has no `Intl.Segmenter`, and this machine's
+ * Node is not that build -- so the refusal is exercised in a child process with
+ * `Intl.Segmenter` deleted, which is what the check actually looks at. Without
+ * the refusal, `counting: "graphemes"` would be accepted there and every count
+ * would come from a different segmentation than the one the config asked for.
+ */
+function probe({ withoutSegmenter = false, counting = 'graphemes' } = {}) {
+  return [
+    withoutSegmenter ? 'delete Intl.Segmenter' : '',
+    'const linter = await import(' + JSON.stringify(MODULE_URL) + ')',
+    'const document = ' + JSON.stringify(baseConfig({ counting })),
+    'try {',
+    '  linter.validateConfig(document)',
+    "  process.stdout.write('ACCEPTED')",
+    '} catch (error) {',
+    "  process.stdout.write(error.name + ': ' + error.message)",
+    '}',
+  ].join('\n')
+}
+
+test('a Node without Intl.Segmenter refuses a graphemes config instead of counting something else', async () => {
+  const refused = await run(process.execPath, ['--input-type=module', '-e', probe({ withoutSegmenter: true })])
+
+  assert.match(refused.stdout, /^ConfigError: counting "graphemes" needs Intl\.Segmenter/)
+  assert.match(refused.stdout, /Choose codePoints or utf16CodeUnits explicitly/)
+})
+
+test('the same refusal does not fire when Intl.Segmenter is there, or for a unit that never needed it', async () => {
+  const present = await run(process.execPath, ['--input-type=module', '-e', probe()])
+  const explicit = await run(process.execPath, [
+    '--input-type=module',
+    '-e',
+    probe({ withoutSegmenter: true, counting: 'codePoints' }),
+  ])
+
+  // The control for the refusal above, and a false-refusal guard: a unit that
+  // is a property of the string alone is accepted on any build.
+  assert.equal(present.stdout, 'ACCEPTED')
+  assert.equal(explicit.stdout, 'ACCEPTED')
 })
