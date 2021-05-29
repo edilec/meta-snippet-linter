@@ -255,10 +255,18 @@ test('counting and duplicateScope have no default, because both change the answe
   const { counting, ...withoutCounting } = baseConfig()
   const { duplicateScope, ...withoutScope } = baseConfig()
 
-  assert.equal(counting, 'graphemes')
-  assert.equal(duplicateScope, 'locale')
   assert.throws(() => validateConfig(withoutCounting), /counting must be one of/)
   assert.throws(() => validateConfig(withoutScope), /duplicateScope must be one of/)
+  assert.throws(() => validateConfig(baseConfig({ counting: null })), /counting must be one of/)
+  assert.throws(() => validateConfig(baseConfig({ duplicateScope: 'page' })), /duplicateScope must be one of/)
+
+  // The control: with both present the same document validates and carries the
+  // two choices into the config the rest of the tool reads. Asserting the
+  // literals this helper just wrote would re-state the helper and could not
+  // fail on any behaviour of the tool.
+  const config = validateConfig(baseConfig())
+  assert.equal(config.counting, counting)
+  assert.equal(config.duplicateScope, duplicateScope)
 })
 
 test('the page list must be non-empty and free of repeated paths', () => {

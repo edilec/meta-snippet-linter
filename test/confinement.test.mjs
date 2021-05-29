@@ -16,6 +16,13 @@ const fixture = (...parts) => join(HERE, 'fixtures', ...parts)
 /** The string planted in the out-of-root file. It must never reach a report. */
 const MARKER = 'OUT-OF-ROOT-MARKER'
 
+/**
+ * The same trick played inside the root, where it is allowed to work: a page
+ * this tool may legitimately read, carrying a marker of its own into the
+ * report as evidence.
+ */
+const INSIDE_MARKER = 'IN-ROOT-MARKER'
+
 async function cli(args) {
   try {
     const { stdout, stderr } = await run(process.execPath, [CLI, ...args])
@@ -97,8 +104,16 @@ test('the out-of-root fixture really does hold the marker, so the checks above c
 
   assert.match(planted, new RegExp(MARKER))
 
-  // And the control: a report that legitimately reads an in-root page does not
-  // contain it either, which is what makes the absence above meaningful.
-  const report = await lintMetaSnippets({ config: fixture('confinement', 'inside.config.json') })
-  assert.doesNotMatch(serializeReport(report), new RegExp(MARKER))
+  // And the control, which needs teeth of its own: a report over a page inside
+  // the root *does* quote that page's text back as evidence. A clean pass would
+  // have proved nothing -- it carries no page text at all, so the out-of-root
+  // marker would be absent from it for a reason that has nothing to do with
+  // confinement.
+  const report = await lintMetaSnippets({ config: fixture('confinement', 'evidence.config.json') })
+  const serialized = serializeReport(report)
+
+  assert.equal(report.status, 'fail')
+  assert.equal(report.findings.length, 1)
+  assert.match(serialized, new RegExp(INSIDE_MARKER))
+  assert.doesNotMatch(serialized, new RegExp(MARKER))
 })
