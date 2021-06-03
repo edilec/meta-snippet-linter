@@ -106,7 +106,8 @@ Things this tool **cannot** conclude:
   by walking a directory. That is what makes runs reproducible, and it means coverage is exactly as
   complete as your page list.
 - **That a page it could not read is fine.** An unreadable, oversized, non-UTF-8 or bounded-out page
-  is `incomplete` and exit 2, never a pass.
+  is `incomplete` and exit 2, never a pass. Only regular files are read: a directory or a named pipe
+  standing where a page should be is refused rather than opened.
 - **Anything about `og:description`, `twitter:description` or a `<base>`-relative rewrite.** Only
   `<title>` and `<meta name="description">` are read.
 - **That the head is exactly what a browser would build.** The scanner reads forward through markup
@@ -118,7 +119,9 @@ Things this tool **cannot** conclude:
 
 It reads files and nothing else: no network, no telemetry, no writes. A page path that leaves the
 input root — by spelling, or through a symbolic link planted inside it — is refused before the file
-is opened.
+is opened. Page text that does reach the report is quoted as a bounded, single-line excerpt with
+control characters replaced, so nothing a build directory contains can repaint the terminal the
+summary is printed in.
 
 ## Development
 

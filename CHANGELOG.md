@@ -29,5 +29,10 @@ Renaming a `ruleId` is a breaking change and will be recorded here.
 
 - Page paths are confined to the input root by real path, after symbolic links are resolved, so a
   link planted inside the build output cannot cause an out-of-root file to be read or quoted.
+- Only regular files are read. A directory, a named pipe or a device node standing where a page
+  should be is `page-unreadable` with the reason `not a regular file`, and is never opened.
+- Report evidence is scrubbed of every C0, `DEL` and C1 control character and of the two Unicode
+  line separators, bounded to 160 characters out and 8192 code units in, so page content cannot
+  repaint the terminal the stderr summary is rendered in.
 
 No release has been published.
