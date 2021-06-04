@@ -105,6 +105,40 @@ export function excerpt(value) {
 }
 
 /**
+ * Say why a document would not parse, without echoing any of it.
+ *
+ * `excerpt` above keeps page content from being echoed at length. A parse
+ * failure slips past it. V8 reports one two ways, and one of them quotes the
+ * input: `Unexpected token 'A', "AKIAIOSFODNN7EXAMPLE" is not valid JSON`. A
+ * config file short enough to be only a credential is therefore reproduced in
+ * full by its own error message, and a longer one ten characters at a time --
+ * a window around the offending character, drawn from wherever it sits.
+ *
+ * `excerpt` cannot fix it: it replaces control characters and cuts from the
+ * *end*, while the quoted span is at the front of the message. Excerpting the
+ * message removes the position and keeps the input, which is backwards.
+ *
+ * The quoted form carries no position, so nothing diagnostic is lost by
+ * reducing it to the offending token. The other form is all position and no
+ * input, and is kept. The quoted window never leaves this function.
+ *
+ * The quoted form is matched first on purpose: a config whose own bytes read
+ * `at position 12` would otherwise be sliced after its own quoted copy.
+ */
+export function parseFailureDetail(error) {
+  const message = typeof error?.message === 'string' ? error.message : ''
+  const token = /^Unexpected token (.+?), (\.\.\.)?".*"(?:\.\.\.)? is not valid JSON$/s.exec(message)
+  if (token) {
+    const where = token[2] === undefined ? ' near the start' : ''
+    return `unexpected token ${excerpt(token[1])}${where}`
+  }
+  const position = /at position \d+(?: \(line \d+ column \d+\))?/.exec(message)
+  if (position) return message.slice(0, position.index + position[0].length)
+  if (/^Unexpected end of JSON input$/.test(message)) return message
+  return 'it could not be parsed as JSON'
+}
+
+/**
  * Build a location. `line` and `column` are 1-based and tool-specific: the
  * report contract defines `file` and `pointer`, and this tool adds the source
  * position of the element a finding is about, because "which tag" is the first

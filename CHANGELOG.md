@@ -8,6 +8,17 @@ Renaming a `ruleId` is a breaking change and will be recorded here.
 
 ## [Unreleased]
 
+### Fixed
+
+- A config file that does not parse is no longer echoed back on stderr.
+  `JSON.parse` embeds the input in one of its two error messages
+  (`Unexpected token 'A', "AKIA…" is not valid JSON`), so a config short enough
+  to be only a credential was reproduced in full by `The config is not valid
+  JSON: …`. `parseFailureDetail` in `src/rules.mjs` keeps the position, line
+  and column — which carry no input — and drops the quotation. Excerpting the
+  message would not have helped: the quotation is at the front of the message
+  and `excerpt` cuts from the back.
+
 ### Added
 
 - Bounded head scanner for built HTML that reads `<title>`, `<meta name="description">`, the html

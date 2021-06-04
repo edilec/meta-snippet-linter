@@ -178,6 +178,14 @@ Page content is data: it is never echoed at length, and never in a shape that co
 instruction to whoever reads the report — or as a control sequence to the terminal the stderr
 summary is rendered in.
 
+The configuration is data on the same terms, and the error path is where that was least obvious.
+`JSON.parse` has two failure messages and one of them embeds the input —
+`Unexpected token 'A', "AKIA…" is not valid JSON` for a short document, and a ten-character window
+around the offending character for a long one. A config file short enough to be only a credential
+would otherwise be reproduced in full by `The config is not valid JSON:` on stderr, and excerpting
+would not have removed it: the quotation is at the front of the message while the bound cuts from
+the back. So a parse failure is reported by position, line and column, which carry no input.
+
 ## Determinism
 
 Findings are ordered by `location.file`, then `location.pointer`, then `ruleId`, then

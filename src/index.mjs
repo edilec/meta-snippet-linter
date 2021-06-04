@@ -26,11 +26,11 @@ import {
   normalizeSnippet,
 } from './count.mjs'
 import { scanHead } from './html.mjs'
-import { at, byCodeUnit, compareFindings, excerpt, makeFinding } from './rules.mjs'
+import { at, byCodeUnit, compareFindings, excerpt, makeFinding, parseFailureDetail } from './rules.mjs'
 
 export { COUNT_UNITS, countUnits, decodeEntities, normalizeSnippet, NAMED_ENTITIES } from './count.mjs'
 export { scanHead } from './html.mjs'
-export { RULE_IDS, RULE_SEVERITY, SEVERITIES, byCodeUnit, compareFindings, severityOf } from './rules.mjs'
+export { RULE_IDS, RULE_SEVERITY, SEVERITIES, byCodeUnit, compareFindings, parseFailureDetail, severityOf } from './rules.mjs'
 
 export const TOOL_ID = 'meta-snippet-linter'
 export const REPORT_SCHEMA_VERSION = '1'
@@ -391,7 +391,7 @@ export async function loadProject(options = {}) {
   try {
     document = JSON.parse(text)
   } catch (error) {
-    throw new ConfigError(`The config is not valid JSON: ${error.message}`)
+    throw new ConfigError(`The config is not valid JSON: ${parseFailureDetail(error)}`)
   }
 
   const config = validateConfig(document, options)

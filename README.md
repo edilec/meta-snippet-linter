@@ -123,6 +123,10 @@ is opened. Page text that does reach the report is quoted as a bounded, single-l
 control characters replaced, so nothing a build directory contains can repaint the terminal the
 summary is printed in.
 
+A config file that does not parse is reported by position, line and column, never by quoting it
+back: `JSON.parse` embeds the input in one of its two error messages, so a config short enough to
+be only a credential would otherwise be reproduced in full by its own failure.
+
 ## Development
 
 ```
