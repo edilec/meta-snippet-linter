@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 10
+    },
+    "description": {
+      "min": 1,
+      "max": 10
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/",
+      "file": "a.html",
+      "locale": "en"
+    }
+  ]
+}

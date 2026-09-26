@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 60
+    },
+    "description": {
+      "min": 1,
+      "max": 160
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/Apple",
+      "file": "build/Apple.html",
+      "locale": "en"
+    },
+    {
+      "path": "/apricot",
+      "file": "build/apricot.html",
+      "locale": "en"
+    },
+    {
+      "path": "/Banana",
+      "file": "build/Banana.html",
+      "locale": "en"
+    }
+  ]
+}

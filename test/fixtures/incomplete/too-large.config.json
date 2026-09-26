@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 200
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/",
+      "file": "build/present.html",
+      "locale": "en"
+    }
+  ],
+  "limits": {
+    "maxHtmlBytes": 16
+  }
+}

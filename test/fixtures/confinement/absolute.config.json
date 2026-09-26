@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 200
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/linked",
+      "file": "/etc/hosts",
+      "locale": "en"
+    }
+  ]
+}

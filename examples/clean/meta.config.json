@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": { "min": 20, "max": 60 },
+    "description": { "min": 70, "max": 155 }
+  },
+  "locales": {
+    "en": {},
+    "ja": {
+      "title": { "min": 8, "max": 32 },
+      "description": { "min": 30, "max": 90 }
+    }
+  },
+  "pages": [
+    { "path": "/", "file": "build/index.html", "locale": "en" },
+    { "path": "/pricing", "file": "build/pricing.html", "locale": "en" },
+    { "path": "/ja/", "file": "build/ja-index.html", "locale": "ja" }
+  ]
+}

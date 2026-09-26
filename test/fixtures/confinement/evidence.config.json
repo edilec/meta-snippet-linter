@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 5
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/evidence",
+      "file": "build/evidence.html",
+      "locale": "en"
+    }
+  ]
+}

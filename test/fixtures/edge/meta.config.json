@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "counting": "graphemes",
+  "duplicateScope": "locale",
+  "defaults": {
+    "title": {
+      "min": 1,
+      "max": 200
+    },
+    "description": {
+      "min": 1,
+      "max": 500
+    }
+  },
+  "locales": {
+    "en": {}
+  },
+  "pages": [
+    {
+      "path": "/blank",
+      "file": "build/blank.html",
+      "locale": "en"
+    },
+    {
+      "path": "/no-title",
+      "file": "build/no-title.html",
+      "locale": "en"
+    }
+  ]
+}
