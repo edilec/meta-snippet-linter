@@ -10,8 +10,22 @@ file, the element and the line it came from.
 - **License:** MIT
 - **Dependencies:** none. Node 22+ built-ins only.
 
+## Run
+
+This package is not published to the npm registry. From a checkout of this
+repository, run the checked-in CLI against the public clean fixture first, then
+replace the config path with one for your own built pages:
+
+```sh
+node bin/meta-snippet-linter.mjs --config examples/clean/meta.config.json
+node bin/meta-snippet-linter.mjs --config site/meta.config.json
 ```
-npx meta-snippet-linter --config site/meta.config.json
+
+From another project, npm can run the public GitHub source directly. The config
+path is relative to the directory where you run this command:
+
+```sh
+npm exec --yes --package=git+https://github.com/edilec/meta-snippet-linter.git -- meta-snippet-linter --config site/meta.config.json
 ```
 
 ## What it does
