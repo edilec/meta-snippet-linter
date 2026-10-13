@@ -139,12 +139,6 @@ test('the README and the docs carry the same honesty the report does', async () 
   assert.match(HEURISTIC_NOTE, /no engine publishes a character limit/)
 })
 
-test('the changelog records that nothing has been published', async () => {
-  const changelog = await read('CHANGELOG.md')
-
-  assert.ok(changelog.trimEnd().endsWith('No release has been published.'))
-})
-
 test('no source file reaches for locale collation or a clock', async () => {
   const sources = [
     'src/index.mjs',

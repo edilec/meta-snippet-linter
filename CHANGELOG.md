@@ -6,7 +6,7 @@ All notable changes to this project are recorded here. The format follows
 
 Renaming a `ruleId` is a breaking change and will be recorded here.
 
-## [Unreleased]
+## [0.1.0] - 2026-10-14
 
 ### Fixed
 
@@ -46,4 +46,4 @@ Renaming a `ruleId` is a breaking change and will be recorded here.
   line separators, bounded to 160 characters out and 8192 code units in, so page content cannot
   repaint the terminal the stderr summary is rendered in.
 
-No release has been published.
+GitHub source release v0.1.0 — 2026-10-14.
